@@ -1,0 +1,4 @@
+proxyPort: 9000
+proxyName: "MightyAnt"
+silent: false
+destinationUrl: "ws://localhost:8000/"

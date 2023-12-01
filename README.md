@@ -1,1 +1,1 @@
-MightyAnt - A simple http4k based websocket proxy
+MightyAnt - A simple Kotlin/http4k based websocket proxy

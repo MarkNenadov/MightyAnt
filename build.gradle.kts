@@ -7,11 +7,11 @@ plugins {
     id("io.ktor.plugin")
 }
 
-group = "com.example"
-version = "0.0.1"
+group = "com.pythonbyte.mightyant"
+version = "0.0.2"
 
 application {
-    mainClass.set("com.example.ApplicationKt")
+    mainClass.set("com.pythonbyte.mightyant.main.MightyAntApp")
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")

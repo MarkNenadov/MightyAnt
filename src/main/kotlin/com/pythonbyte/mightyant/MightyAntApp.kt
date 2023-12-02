@@ -9,6 +9,10 @@ import org.http4k.websocket.WsMessage
 import org.pythonbyte.krux.json.JsonObject
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor
+import java.io.ByteArrayOutputStream
+import java.util.Base64
+import java.util.zip.GZIPOutputStream
+import kotlin.text.Charsets.UTF_8
 
 fun main() {
     val config = getConfig()
@@ -21,21 +25,27 @@ fun main() {
                 )
             }
             proxySocket.onMessage {
+                val bytes = ByteArray(it.body.payload.remaining())
+                it.body.payload.get(bytes)
+                val content = String(bytes, Charsets.UTF_8)
+
                 if (config.arbitraryMode) {
-                    val bytes = ByteArray(it.body.payload.remaining())
-                    it.body.payload.get(bytes)
-                    val jsonObject = JsonObject(String(bytes, Charsets.UTF_8))
+                    val jsonObject = JsonObject(content)
 
                     sendToWebsocket(
                         jsonObject.getString("url"),
-                        jsonObject.getString("content"),
+                        transformations(config, jsonObject.getString("content")),
                         proxySocket,
                     )
                 } else {
-                    sendToWebsocket(config.destinationUrl, it.body, proxySocket)
+                    sendToWebsocket(
+                        config.destinationUrl,
+                        transformations(config, content),
+                        proxySocket,
+                    )
 
                     config.mirrorUrls.forEach { mirrorUrl: String ->
-                        sendToWebsocket(mirrorUrl, it.body, proxySocket)
+                        sendToWebsocket(mirrorUrl, content, proxySocket)
                     }
                 }
             }
@@ -45,6 +55,23 @@ fun main() {
     } else {
         println("Unable to start Proxy, due to missing resources/config.yaml")
     }
+}
+
+fun transformations(config: MightyAntConfig, content: String): String {
+    var newContent = content
+
+    if (config.useBase64) {
+        val byteArray = newContent.toByteArray()
+        newContent = Base64.getEncoder().encodeToString(byteArray)
+    }
+
+    if (config.useCompression) {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        GZIPOutputStream(byteArrayOutputStream).bufferedWriter(UTF_8).use { it.write(content) }
+        newContent = String(byteArrayOutputStream.toByteArray())
+    }
+
+    return newContent
 }
 
 fun getConfig(): MightyAntConfig? {

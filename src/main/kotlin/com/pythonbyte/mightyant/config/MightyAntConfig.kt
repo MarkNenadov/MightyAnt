@@ -7,4 +7,6 @@ data class MightyAntConfig(
     var proxyName: String = "MightyAnt",
     var silent: Boolean = false,
     var arbitraryMode: Boolean = false,
+    var useCompression: Boolean = false,
+    var useBase64: Boolean = false,
 )

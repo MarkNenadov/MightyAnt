@@ -14,6 +14,12 @@ proxyName: "MightyAnt"
 # should it be silent or identify itself upon connection?
 silent: false 
 
+# useCompression (gzip)
+useCompression: false 
+
+# useBase64
+useBase64: false 
+
 # false = hardcoded url, true = url is supplied via json message
 arbitraryMode: false 
 
@@ -41,3 +47,9 @@ B. If arbitraryMode = true, your websocket message should look like this:
     "content: "The websocket message I want to proxy"
 }
 ```
+
+### TODO
+
+* organize config by nesty option-y stuff (debatable)
+* implement some form of authentication in arbitraryMode
+

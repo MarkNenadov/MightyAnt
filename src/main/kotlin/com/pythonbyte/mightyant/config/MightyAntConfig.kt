@@ -6,4 +6,5 @@ data class MightyAntConfig(
     var mirrorUrls: List<String> = mutableListOf(),
     var proxyName: String = "MightyAnt",
     var silent: Boolean = false,
+    var arbitraryMode: Boolean = false,
 )

@@ -22,6 +22,7 @@ repositories {
 }
 
 dependencies {
+    implementation(files("libs/pythonbyte-krux.jar"))
     implementation(platform(Http4k.bom))
     implementation(Http4k.core)
     implementation(Http4k.server.jetty)

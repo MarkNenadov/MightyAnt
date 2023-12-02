@@ -1,6 +1,7 @@
 proxyPort: 9000
 proxyName: "MightyAnt"
 silent: false
+arbitraryMode: false
 destinationUrl: "ws://localhost:7300/"
 mirrorUrls:
   - "ws://localhost:7301"

@@ -1,7 +1,7 @@
 package com.pythonbyte.mightyant
 
 import com.pythonbyte.mightyant.config.MightyAntConfig
-import com.pythonbyte.mightyant.util.sendToWebSocket
+import com.pythonbyte.mightyant.util.sendToWebsocket
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.http4k.websocket.Websocket
@@ -13,18 +13,18 @@ fun main() {
     val config = getConfig()
 
     if (config != null) {
-        { ws: Websocket ->
+        { proxySocket: Websocket ->
             if (!config.silent) {
-                ws.send(
+                proxySocket.send(
                     WsMessage("Welcome to ${config.proxyName} Proxy"),
                 )
             }
-            ws.onMessage {
+            proxySocket.onMessage {
                 println("Receiving message")
-                sendToWebSocket(config.destinationUrl, it.body, ws)
+                sendToWebsocket(config.destinationUrl, it.body, proxySocket)
 
                 config.mirrorUrls.forEach { mirrorUrl: String ->
-                    sendToWebSocket(mirrorUrl, it.body, ws)
+                    sendToWebsocket(mirrorUrl, it.body, proxySocket)
                 }
             }
         }.asServer(

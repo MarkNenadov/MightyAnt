@@ -5,13 +5,18 @@ import org.http4k.core.Body
 import org.http4k.core.Uri
 import org.http4k.websocket.Websocket
 import org.http4k.websocket.WsMessage
+import org.java_websocket.exceptions.WebsocketNotConnectedException
 
-fun sendToWebSocket(url: String, body: Body, parentSocket: Websocket?) {
-    val client = WebsocketClient.nonBlocking(
-        Uri.of(url),
-    )
+fun sendToWebsocket(url: String, body: Body, proxySocket: Websocket) {
+    try {
+        val proxiedClient = WebsocketClient.blocking(
+            Uri.of(url),
+        )
 
-    client.run {
-        this.send(WsMessage(body))
+        proxiedClient.run {
+            this.send(WsMessage(body))
+        }
+    } catch (e: WebsocketNotConnectedException) {
+        proxySocket.send(WsMessage("Proxying failed [$e]"))
     }
 }

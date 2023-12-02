@@ -1,4 +1,8 @@
 proxyPort: 9000
 proxyName: "MightyAnt"
 silent: false
-destinationUrl: "ws://localhost:8000/"
+destinationUrl: "ws://localhost:7300/"
+mirrorUrls:
+  - "ws://localhost:7301"
+  - "ws://localhost:7302"
+  - "ws://localhost:7303"

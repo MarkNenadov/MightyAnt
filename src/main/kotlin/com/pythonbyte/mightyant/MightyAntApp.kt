@@ -1,8 +1,6 @@
 package com.pythonbyte.mightyant
 
 import com.pythonbyte.mightyant.config.MightyAntConfig
-import org.http4k.websocket.Websocket
-import org.http4k.websocket.WsMessage
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.Constructor
 

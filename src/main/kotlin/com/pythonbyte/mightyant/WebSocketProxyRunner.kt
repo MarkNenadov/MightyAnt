@@ -6,13 +6,14 @@ import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.http4k.websocket.Websocket
 import org.http4k.websocket.WsMessage
+import org.pythonbyte.krux.conversions.asString
+import org.pythonbyte.krux.conversions.base64
+import org.pythonbyte.krux.conversions.gzip
 import org.pythonbyte.krux.json.JsonObject
-import org.pythonbyte.krux.string.asString
-import java.io.ByteArrayOutputStream
 import java.util.*
-import java.util.zip.GZIPOutputStream
+import kotlin.io.encoding.ExperimentalEncodingApi
 
-class WebSocketProxyRunner(val config: MightyAntConfig): Runnable {
+class WebSocketProxyRunner(val config: MightyAntConfig) : Runnable {
     private lateinit var proxySocket: Websocket
 
     private fun processRegularMode(content: String) {
@@ -43,18 +44,16 @@ class WebSocketProxyRunner(val config: MightyAntConfig): Runnable {
         )
     }
 
+    @OptIn(ExperimentalEncodingApi::class)
     private fun transformations(content: String): String {
         var newContent = content
 
         if (config.useBase64) {
-            val byteArray = newContent.toByteArray()
-            newContent = Base64.getEncoder().encodeToString(byteArray)
+            newContent = newContent.base64()
         }
 
         if (config.useCompression) {
-            val byteArrayOutputStream = ByteArrayOutputStream()
-            GZIPOutputStream(byteArrayOutputStream).bufferedWriter(Charsets.UTF_8).use { it.write(content) }
-            newContent = String(byteArrayOutputStream.toByteArray())
+            newContent = newContent.gzip()
         }
 
         return newContent

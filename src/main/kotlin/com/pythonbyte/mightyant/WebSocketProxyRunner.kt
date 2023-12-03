@@ -5,6 +5,7 @@ import com.pythonbyte.mightyant.util.sendToWebsocket
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.http4k.websocket.Websocket
+import org.http4k.websocket.WsMessage
 import org.pythonbyte.krux.json.JsonObject
 import org.pythonbyte.krux.string.asString
 import java.io.ByteArrayOutputStream
@@ -36,6 +37,12 @@ class WebSocketProxyRunner(val config: MightyAntConfig): Runnable {
         )
     }
 
+    private fun sendWelcomeMessage(proxySocket: Websocket) {
+        proxySocket.send(
+            WsMessage("Welcome to ${config.proxyName} Proxy"),
+        )
+    }
+
     private fun transformations(content: String): String {
         var newContent = content
 
@@ -58,7 +65,7 @@ class WebSocketProxyRunner(val config: MightyAntConfig): Runnable {
                 proxySocket: Websocket ->
             this.proxySocket = proxySocket
             if (!config.silent) {
-                sendWelcomeMessage(proxySocket, config)
+                sendWelcomeMessage(proxySocket)
             }
             proxySocket.onMessage {
                 val content = it.body.payload.asString()

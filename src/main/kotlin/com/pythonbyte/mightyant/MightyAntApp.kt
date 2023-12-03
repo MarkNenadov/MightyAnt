@@ -11,12 +11,6 @@ fun main() {
     proxyListener.run()
 }
 
-fun sendWelcomeMessage(proxySocket: Websocket, config: MightyAntConfig) {
-    proxySocket.send(
-        WsMessage("Welcome to ${config.proxyName} Proxy"),
-    )
-}
-
 fun getConfig(): MightyAntConfig {
     val inputStream = Thread.currentThread().contextClassLoader.getResourceAsStream("config.yaml")
     if (inputStream != null) {

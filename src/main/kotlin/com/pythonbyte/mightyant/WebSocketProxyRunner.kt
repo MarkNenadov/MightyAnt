@@ -2,6 +2,7 @@ package com.pythonbyte.mightyant
 
 import com.pythonbyte.mightyant.config.MightyAntConfig
 import com.pythonbyte.mightyant.util.sendToWebsocket
+import getLogger
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
 import org.http4k.websocket.Websocket
@@ -10,13 +11,14 @@ import org.pythonbyte.krux.conversions.asString
 import org.pythonbyte.krux.conversions.base64
 import org.pythonbyte.krux.conversions.gzip
 import org.pythonbyte.krux.json.JsonObject
-import java.util.*
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 class WebSocketProxyRunner(val config: MightyAntConfig) : Runnable {
     private lateinit var proxySocket: Websocket
 
     private fun processRegularMode(content: String) {
+        logger.debug("Regular mode proxy to => ${config.destinationUrl}")
+
         sendToWebsocket(
             config.destinationUrl,
             transformations(content),
@@ -24,6 +26,7 @@ class WebSocketProxyRunner(val config: MightyAntConfig) : Runnable {
         )
 
         config.mirrorUrls.forEach { mirrorUrl: String ->
+            logger.debug("Regular mode proxy mirror to => ${config.destinationUrl}")
             sendToWebsocket(mirrorUrl, content, proxySocket)
         }
     }
@@ -31,9 +34,13 @@ class WebSocketProxyRunner(val config: MightyAntConfig) : Runnable {
     private fun processArbitraryMode(content: String) {
         val jsonObject = JsonObject(content)
 
+        val payload = jsonObject.getString("content")
+
+        logger.debug("Payload received [${content.take(PAYLOAD_LOGGING_CHAR_LIMIT)}]")
+
         sendToWebsocket(
             jsonObject.getString("url"),
-            transformations(jsonObject.getString("content")),
+            transformations(payload),
             proxySocket,
         )
     }
@@ -49,10 +56,12 @@ class WebSocketProxyRunner(val config: MightyAntConfig) : Runnable {
         var newContent = content
 
         if (config.useBase64) {
+            logger.debug("Base64 transformation applied")
             newContent = newContent.base64()
         }
 
         if (config.useCompression) {
+            logger.debug("Gzip compression transformation applied")
             newContent = newContent.gzip()
         }
 
@@ -72,11 +81,17 @@ class WebSocketProxyRunner(val config: MightyAntConfig) : Runnable {
                 if (config.arbitraryMode) {
                     processArbitraryMode(content)
                 } else {
+                    logger.debug("Payload received [${content.take(PAYLOAD_LOGGING_CHAR_LIMIT)}]")
                     processRegularMode(content)
                 }
             }
         }.asServer(
             Jetty(config.proxyPort),
         ).start()
+    }
+
+    companion object {
+        private val logger = getLogger(this::class.java)
+        private const val PAYLOAD_LOGGING_CHAR_LIMIT = 200
     }
 }

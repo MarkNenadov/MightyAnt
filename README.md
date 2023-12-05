@@ -23,10 +23,10 @@ useBase64: false
 # false = hardcoded url, true = url is supplied via json message
 arbitraryMode: false 
 
-# websocket url to proxy to
+# websocket url to proxy to (ignored in arbitrary mode)
 destinationUrl: "ws://localhost:7300/"
 
-# websocket urls to mirror proxing to
+# websocket urls to mirror proxing to (ignored in arbitrary mode)
 mirrorUrls:
   - "ws://localhost:7301"
   - "ws://localhost:7302"

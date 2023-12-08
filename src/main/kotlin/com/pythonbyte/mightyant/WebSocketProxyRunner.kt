@@ -13,7 +13,7 @@ import org.pythonbyte.krux.conversions.gzip
 import org.pythonbyte.krux.json.JsonObject
 import kotlin.io.encoding.ExperimentalEncodingApi
 
-class WebSocketProxyRunner(val config: MightyAntConfig) : Runnable {
+class WebSocketProxyRunner(private val config: MightyAntConfig) : Runnable {
     private lateinit var proxySocket: Websocket
 
     private fun processRegularMode(content: String) {

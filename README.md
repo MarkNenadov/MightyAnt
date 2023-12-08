@@ -53,3 +53,11 @@ B. If arbitraryMode = true, your websocket message should look like this:
 * organize config by nesty option-y stuff (debatable)
 * implement some form of authentication in arbitraryMode
 
+## Tech
+
+Kotlin, IntelliJ, Gradle
+
+<p align="center">
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=kotlin,idea,gradle" />
+  </a>

@@ -7,10 +7,6 @@ import org.http4k.websocket.Websocket
 import org.http4k.websocket.WsMessage
 import org.java_websocket.exceptions.WebsocketNotConnectedException
 
-fun sendToWebsocket(url: String, body: Body, proxySocket: Websocket) {
-    sendToWebsocket(url, body, proxySocket)
-}
-
 fun sendToWebsocket(url: String, bodyContent: String, proxySocket: Websocket) {
     try {
         val proxiedClient = WebsocketClient.blocking(

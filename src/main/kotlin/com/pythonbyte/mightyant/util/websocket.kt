@@ -1,7 +1,6 @@
 package com.pythonbyte.mightyant.util
 
 import org.http4k.client.WebsocketClient
-import org.http4k.core.Body
 import org.http4k.core.Uri
 import org.http4k.websocket.Websocket
 import org.http4k.websocket.WsMessage
@@ -14,7 +13,9 @@ fun sendToWebsocket(url: String, bodyContent: String, proxySocket: Websocket) {
         )
 
         proxiedClient.run {
-            this.send(WsMessage(bodyContent))
+            this.send(
+                WsMessage(bodyContent),
+            )
         }
     } catch (e: WebsocketNotConnectedException) {
         proxySocket.send(WsMessage("Proxying failed [$e]"))

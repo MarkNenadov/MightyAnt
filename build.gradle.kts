@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.pythonbyte.mightyant"
-version = "0.2.0"
+version = "0.2.1"
 
 application {
     mainClass.set("com.pythonbyte.mightyant.main.MightyAntApp")

@@ -5,13 +5,13 @@ A simple Kotlin/http4k based websocket proxy.
 ### Config (resources/config.yaml)
 
 ```
-# port of the server listening for proxy requests
+# port for listening for proxy requests
 proxyPort: 9000 
 
-# name it identifies itself with upon connection
+# name presented upon connection
 proxyName: "MightyAnt" 
 
-# should it be silent or identify itself upon connection?
+# should it be silent or present name upon connection?
 silent: false 
 
 # useCompression (gzip)
@@ -35,7 +35,9 @@ mirrorUrls:
 
 ### Message Format
 
-Once connected to socket, how to structure your message for proxying depends on how you have arbitraryMode configuration set.
+Once you are connected to the socket, you can send messages.
+
+The details of how to structure your message for proxying depends on what arbitraryModel is set to.
 
 A. If arbitraryMode = false, your websocket message is simply the content you want to proxy.
 
@@ -61,3 +63,4 @@ Kotlin, IntelliJ, Gradle
   <a href="https://skillicons.dev">
     <img src="https://skillicons.dev/icons?i=kotlin,idea,gradle" />
   </a>
+</p>

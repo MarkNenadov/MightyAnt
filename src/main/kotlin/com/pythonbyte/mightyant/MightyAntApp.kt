@@ -13,7 +13,9 @@ fun main() {
 
     logger.info("Loading MightyAnt...")
     proxyListener.run()
-    logger.info("Listening for Proxying on port ${config.proxyPort} in ${if (config.arbitraryMode) "Arbitrary Mode" else "Regular Mode"}")
+    logger.info(
+        "Listening for Proxying on port ${config.proxyPort} in ${if (config.arbitraryMode) "Arbitrary Mode" else "Regular Mode"}"
+    )
 }
 
 fun getConfig(): MightyAntConfig {

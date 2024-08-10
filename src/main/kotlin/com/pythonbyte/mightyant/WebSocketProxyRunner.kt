@@ -32,17 +32,21 @@ class WebSocketProxyRunner(private val config: MightyAntConfig) : Runnable {
     }
 
     private fun processArbitraryMode(content: String) {
-        val jsonObject = JsonObject(content)
+        logPayloadReceived(content)
 
-        val payload = jsonObject.getString("content")
+        with(JsonObject(content)) {
+            val payload = getString("content")
 
+            sendToWebsocket(
+                getString("url"),
+                transformations(payload),
+                proxySocket,
+            )
+        }
+    }
+
+    private fun logPayloadReceived(content: String) {
         logger.debug("Payload received [${content.take(PAYLOAD_LOGGING_CHAR_LIMIT)}]")
-
-        sendToWebsocket(
-            jsonObject.getString("url"),
-            transformations(payload),
-            proxySocket,
-        )
     }
 
     private fun sendWelcomeMessage(proxySocket: Websocket) {
@@ -76,13 +80,13 @@ class WebSocketProxyRunner(private val config: MightyAntConfig) : Runnable {
                 sendWelcomeMessage(proxySocket)
             }
             proxySocket.onMessage {
-                val content = it.body.payload.asString()
-
-                if (config.arbitraryMode) {
-                    processArbitraryMode(content)
-                } else {
-                    logger.debug("Payload received [${content.take(PAYLOAD_LOGGING_CHAR_LIMIT)}]")
-                    processRegularMode(content)
+                with(it.body.payload.asString()) {
+                    if (config.arbitraryMode) {
+                        processArbitraryMode(this)
+                    } else {
+                        logPayloadReceived(this)
+                        processRegularMode(this)
+                    }
                 }
             }
         }.asServer(

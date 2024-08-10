@@ -19,15 +19,16 @@ class WebSocketProxyRunner(private val config: MightyAntConfig) : Runnable {
     private fun processRegularMode(content: String) {
         logger.debug("Regular mode proxy to => ${config.destinationUrl}")
 
+        val transformedContent = transformations(content)
         sendToWebsocket(
             config.destinationUrl,
-            transformations(content),
+            transformedContent,
             proxySocket,
         )
 
         config.mirrorUrls.forEach { mirrorUrl: String ->
             logger.debug("Regular mode proxy mirror to => ${config.destinationUrl}")
-            sendToWebsocket(mirrorUrl, content, proxySocket)
+            sendToWebsocket(mirrorUrl, transformedContent, proxySocket)
         }
     }
 

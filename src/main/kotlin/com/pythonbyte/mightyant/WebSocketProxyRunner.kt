@@ -33,9 +33,7 @@ class WebSocketProxyRunner(private val config: MightyAntConfig) : Runnable {
     }
 
     private fun processArbitraryMode(content: String) {
-        logPayloadReceived(content)
-
-        with(JsonObject(content)) {
+        JsonObject(content).apply {
             val payload = getString("content")
 
             sendToWebsocket(
@@ -58,41 +56,36 @@ class WebSocketProxyRunner(private val config: MightyAntConfig) : Runnable {
 
     @OptIn(ExperimentalEncodingApi::class)
     private fun transformations(content: String): String {
-        var newContent = content
-
-        if (config.useBase64) {
-            logger.debug("Base64 transformation applied")
-            newContent = newContent.base64()
-        }
-
-        if (config.useCompression) {
-            logger.debug("Gzip compression transformation applied")
-            newContent = newContent.gzip()
-        }
-
-        return newContent
+        return content
+            .takeIf { config.useBase64 }?.base64()
+            .takeIf { config.useCompression }?.gzip()
+            ?: content
     }
 
     override fun run() {
-        {
-                proxySocket: Websocket ->
+        { proxySocket: Websocket ->
             this.proxySocket = proxySocket
             if (!config.silent) {
                 sendWelcomeMessage(proxySocket)
             }
-            proxySocket.onMessage {
-                with(it.body.payload.asString()) {
-                    if (config.arbitraryMode) {
-                        processArbitraryMode(this)
-                    } else {
-                        logPayloadReceived(this)
-                        processRegularMode(this)
-                    }
-                }
+            proxySocket.onMessage { message ->
+                message.process()
             }
         }.asServer(
             Jetty(config.proxyPort),
         ).start()
+    }
+
+    private fun WsMessage.process() {
+        body.payload.asString().apply {
+            logPayloadReceived(this)
+
+            if (config.arbitraryMode) {
+                processArbitraryMode(this)
+            } else {
+                processRegularMode(this)
+            }
+        }
     }
 
     companion object {

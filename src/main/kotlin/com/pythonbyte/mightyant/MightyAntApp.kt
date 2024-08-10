@@ -9,20 +9,20 @@ private val logger = getLogger(MightyAntConfig::class.java)
 
 fun main() {
     val config = getConfig()
-    val proxyListener = WebSocketProxyRunner(config)
 
     logger.info("Loading MightyAnt...")
-    proxyListener.run()
-    logger.info(
-        "Listening for Proxying on port ${config.proxyPort} in ${if (config.arbitraryMode) "Arbitrary Mode" else "Regular Mode"}"
-    )
+    WebSocketProxyRunner(config).run()
+
+    with(config) {
+        logger.info(
+            "Listening for Proxying on port $proxyPort in ${if (arbitraryMode) "Arbitrary Mode" else "Regular Mode"}"
+        )
+    }
 }
 
 fun getConfig(): MightyAntConfig {
-    val yaml = Yaml()
-
     try {
-        return yaml.loadAs(
+        return Yaml().loadAs(
             resourceToInputStream("config.yaml"),
             MightyAntConfig::class.java,
         ) ?: MightyAntConfig()

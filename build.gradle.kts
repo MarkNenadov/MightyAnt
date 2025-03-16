@@ -30,6 +30,6 @@ dependencies {
     implementation(Http4k.format.jackson)
     implementation("org.yaml:snakeyaml:_")
     implementation("ch.qos.logback:logback-classic:_")
-    implementation("org.slf4j:slf4j-api:1.7.30")
+    implementation("org.slf4j:slf4j-api:_")
     testImplementation(Kotlin.test.junit)
 }

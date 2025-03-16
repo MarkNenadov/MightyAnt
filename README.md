@@ -2,6 +2,10 @@
 
 A simple Kotlin/http4k based websocket proxy.
 
+### Requirements
+
+JDK 21+ (developed with Azul Zulu: 23.32.11 ARM 64 bit)
+
 ### Config (resources/config.yaml)
 
 ```

@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.pythonbyte.mightyant"
-version = "0.7.2"
+version = "0.7.3"
 
 application {
     mainClass.set("com.pythonbyte.mightyant.main.MightyAntApp")
@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    implementation(files("libs/pythonbyte-krux.jar"))
+    implementation(files("libs/pythonbyte-krux-jar-with-dependencies.jar"))
     implementation(platform(Http4k.bom))
     implementation(Http4k.core)
     implementation(Http4k.server.jetty)

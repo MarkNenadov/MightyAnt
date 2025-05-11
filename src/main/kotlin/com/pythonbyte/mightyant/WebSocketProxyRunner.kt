@@ -13,6 +13,12 @@ import org.pythonbyte.krux.conversions.gzip
 import org.pythonbyte.krux.json.JsonObject
 import kotlin.io.encoding.ExperimentalEncodingApi
 
+/**
+ * Handles WebSocket proxy operations for the MightyAnt application.
+ * Supports both regular and arbitrary modes of operation.
+ *
+ * @property config The application configuration
+ */
 class WebSocketProxyRunner(private val config: MightyAntConfig) : Runnable {
     private lateinit var proxySocket: Websocket
 
@@ -32,15 +38,24 @@ class WebSocketProxyRunner(private val config: MightyAntConfig) : Runnable {
         }
     }
 
+    /**
+     * Processes messages in arbitrary mode, extracting destination URL and content from the message.
+     */
     private fun processArbitraryMode(content: String) {
-        JsonObject(content).apply {
-            val payload = getString("content")
+        try {
+            JsonObject(content).apply {
+                val payload = getString("content")
+                val url = getString("url")
 
-            sendToWebsocket(
-                getString("url"),
-                transformations(payload),
-                proxySocket,
-            )
+                sendToWebsocket(
+                    url,
+                    transformations(payload),
+                    proxySocket,
+                )
+            }
+        } catch (e: Exception) {
+            logger.error("Failed to process arbitrary mode message: ${e.message}")
+            proxySocket.send(WsMessage("Error processing message: ${e.message}"))
         }
     }
 
@@ -69,13 +84,21 @@ class WebSocketProxyRunner(private val config: MightyAntConfig) : Runnable {
                 sendWelcomeMessage(proxySocket)
             }
             proxySocket.onMessage { message ->
-                message.process()
+                try {
+                    message.process()
+                } catch (e: Exception) {
+                    logger.error("Error processing WebSocket message: ${e.message}")
+                    proxySocket.send(WsMessage("Error processing message: ${e.message}"))
+                }
             }
         }.asServer(
             Jetty(config.proxyPort),
         ).start()
     }
 
+    /**
+     * Processes an incoming WebSocket message.
+     */
     private fun WsMessage.process() {
         body.payload.asString().apply {
             logPayloadReceived(this)

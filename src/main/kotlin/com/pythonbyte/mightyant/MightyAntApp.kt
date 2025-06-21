@@ -21,28 +21,29 @@ fun main() {
 
     with(config) {
         logger.info(
-            "Listening for Proxying on port $proxyPort in ${if (arbitraryMode) "Arbitrary Mode" else "Regular Mode"}"
+            "Listening for Proxying on port $proxyPort in ${if (arbitraryMode) "Arbitrary Mode" else "Regular Mode"}",
         )
     }
 }
 
 /**
  * Loads and validates the application configuration from the YAML file.
- * 
+ *
  * @return A non-null [MightyAntConfig] instance
  * @throws IllegalStateException if the configuration cannot be loaded or is invalid
  */
 fun getConfig(): MightyAntConfig {
     return try {
-        val config = Yaml().loadAs(
-            resourceToInputStream("config.yaml"),
-            MightyAntConfig::class.java,
-        )
-        
+        val config =
+            Yaml().loadAs(
+                resourceToInputStream("config.yaml"),
+                MightyAntConfig::class.java,
+            )
+
         if (config == null) {
             throw IllegalStateException("Configuration file is empty")
         }
-        
+
         config
     } catch (e: IOException) {
         throw IllegalStateException("Failed to read configuration file: ${e.message}", e)

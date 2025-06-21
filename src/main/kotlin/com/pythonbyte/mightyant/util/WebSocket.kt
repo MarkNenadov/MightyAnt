@@ -12,9 +12,10 @@ fun sendToWebsocket(
     proxySocket: Websocket,
 ) {
     try {
-        val proxiedClient = WebsocketClient.blocking(
-            Uri.of(url),
-        )
+        val proxiedClient =
+            WebsocketClient.blocking(
+                Uri.of(url),
+            )
 
         proxiedClient.run {
             this.send(

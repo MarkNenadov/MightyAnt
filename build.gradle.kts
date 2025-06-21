@@ -1,14 +1,14 @@
-
-val kotlin_version: String by project
-val logback_version: String by project
+val kotlinVersion: String by project
+val logbackVersion: String by project
 
 plugins {
     kotlin("jvm")
     id("io.ktor.plugin")
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
 }
 
 group = "com.pythonbyte.mightyant"
-version = "0.7.5"
+version = "0.7.6"
 
 application {
     mainClass.set("com.pythonbyte.mightyant.main.MightyAntApp")
@@ -32,4 +32,14 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:_")
     implementation("org.slf4j:slf4j-api:_")
     testImplementation(Kotlin.test.junit)
+}
+
+// Configure ktlint
+ktlint {
+    version.set("1.0.1")
+    android.set(false)
+    verbose.set(true)
+    filter {
+        exclude { element -> element.file.path.contains("build/") }
+    }
 }

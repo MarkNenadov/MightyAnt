@@ -10,22 +10,22 @@ JDK 21+ (developed with Azul Zulu: 23.32.11 ARM 64 bit)
 
 ```
 # port for listening for proxy requests
-proxyPort: 9000 
+proxyPort: 9000
 
 # name presented upon connection
-proxyName: "MightyAnt" 
+proxyName: "MightyAnt"
 
 # should it be silent or present name upon connection?
-silent: false 
+silent: false
 
 # useCompression (gzip)
-useCompression: false 
+useCompression: false
 
 # useBase64
-useBase64: false 
+useBase64: false
 
 # false = hardcoded url, true = url is supplied via json message
-arbitraryMode: false 
+arbitraryMode: false
 
 # websocket url to proxy to (ignored in arbitrary mode)
 destinationUrl: "ws://localhost:7300/"
@@ -52,6 +52,16 @@ B. If arbitraryMode = true, your websocket message should look like this:
     "url": "ws://theurltoproxyto.com",
     "content: "The websocket message I want to proxy"
 }
+```
+
+### Code Quality
+
+This repo uses ktlint:
+
+```bash
+./gradlew ktlintCheck
+./gradlew ktlintFormat
+
 ```
 
 ### TODO
